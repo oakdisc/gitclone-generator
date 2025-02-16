@@ -23,6 +23,7 @@
     "@mui/material-nextjs": "^6.4.3",
     "next": "15.1.7",
     "react": "^19.0.0",
+    "react-code-blocks": "^0.1.6",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
