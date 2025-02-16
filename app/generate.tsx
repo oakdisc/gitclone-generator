@@ -65,12 +65,7 @@ export default function Generate() {
           required
           sx={{ marginBottom: 2 }}
         />
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          fullWidth
-        >
+        <Button type="submit" variant="contained" color="primary" fullWidth>
           Generate
         </Button>
       </form>
