@@ -1,8 +1,7 @@
-"use client";
 import { useState } from "react";
-import { TextField, Button, Typography, Box } from "@mui/material";
+import { TextField, Button, Typography, Box, Container } from "@mui/material";
 import { CLONE_METHODS, LOCAL_STORAGE_KEYS } from "./utils/constants";
-import { CopyBlock } from "react-code-blocks";
+import { atomOneDark, CopyBlock } from "react-code-blocks";
 import { useRouter } from "next/navigation";
 
 export default function Generate() {
@@ -54,7 +53,7 @@ export default function Generate() {
   };
 
   return (
-    <Box sx={{ maxWidth: 400, margin: "auto", padding: 2 }}>
+    <Container maxWidth="md">
       <form onSubmit={handleSubmit}>
         <TextField
           label="Repository Name"
@@ -80,15 +79,16 @@ export default function Generate() {
       </Button>
       {commands && (
         <Box sx={{ marginTop: 2 }}>
-          <Typography variant="h6">Clone Command:</Typography>
+          <Typography variant="h6">Commands:</Typography>
           <CopyBlock
             text={commands}
-            language="sh"
+            language="batch"
             showLineNumbers={true}
-            copied={false}
+            theme={atomOneDark}
+            wrapLongLines={false}
           />
         </Box>
       )}
-    </Box>
+    </Container>
   );
 }
