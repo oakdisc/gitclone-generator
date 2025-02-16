@@ -29,13 +29,13 @@ export default function Generate() {
 
       switch (cloneMethod) {
         case CLONE_METHODS.SSH:
-          newCommands = `git clone ssh://${sshProfileName}/${userName}/${repoName}`;
+          newCommands = `git clone ssh://${sshProfileName}/${userName}/${repoName}\n`;
           break;
         case CLONE_METHODS.HTTPS:
-          newCommands = `git clone https://github.com/${userName}/${repoName}.git`;
+          newCommands = `git clone https://github.com/${userName}/${repoName}.git\n`;
           break;
         default:
-          newCommands = `# Error: Invalid clone method`;
+          newCommands = `# Error: Invalid clone method\n`;
           break;
       }
 
