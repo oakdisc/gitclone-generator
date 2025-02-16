@@ -37,7 +37,7 @@ export default function Generate() {
 
       switch (cloneMethod) {
         case CLONE_METHODS.SSH:
-          newCommands = `git clone ssh://${sshProfileName}/${repoOwner}/${repoName}.git\n`;
+          newCommands = `git clone ssh://${sshProfileName}:${repoOwner}/${repoName}.git\n`;
           break;
         case CLONE_METHODS.HTTPS:
           newCommands = `git clone https://github.com/${repoOwner}/${repoName}.git\n`;
