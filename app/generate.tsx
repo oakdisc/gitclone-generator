@@ -1,13 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TextField, Button, Typography, Box, Container } from "@mui/material";
 import { CLONE_METHODS, LOCAL_STORAGE_KEYS } from "./utils/constants";
 import { atomOneDark, CopyBlock } from "react-code-blocks";
 import { useRouter } from "next/navigation";
 
 export default function Generate() {
+  const [repoOwner, setRepoOwner] = useState("");
   const [repoName, setRepoName] = useState("");
   const [commands, setCommands] = useState("");
   const router = useRouter();
+
+  useEffect(() => {
+    // Retrieve values from localStorage
+    const storedUserName = localStorage.getItem(LOCAL_STORAGE_KEYS.USER_NAME);
+
+    // Set state if values are not empty
+    if (storedUserName) setRepoOwner(storedUserName);
+  }, []); // Empty dependency array to run only on mount
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,16 +31,16 @@ export default function Generate() {
       const cloneMethod = localStorage.getItem(LOCAL_STORAGE_KEYS.CLONE_METHOD);
 
       let repoName = inputRepoName.trim();
-      if (!repoName.endsWith(".git")) repoName += ".git";
+      if (repoName.endsWith(".git")) repoName = repoName.slice(0, -4);
 
       let newCommands = "";
 
       switch (cloneMethod) {
         case CLONE_METHODS.SSH:
-          newCommands = `git clone ssh://${sshProfileName}/${userName}/${repoName}\n`;
+          newCommands = `git clone ssh://${sshProfileName}/${repoOwner}/${repoName}.git\n`;
           break;
         case CLONE_METHODS.HTTPS:
-          newCommands = `git clone https://github.com/${userName}/${repoName}.git\n`;
+          newCommands = `git clone https://github.com/${repoOwner}/${repoName}.git\n`;
           break;
         default:
           newCommands = `# Error: Invalid clone method\n`;
@@ -55,6 +64,15 @@ export default function Generate() {
   return (
     <Container maxWidth="md">
       <form onSubmit={handleSubmit}>
+        <TextField
+          label="Repository Owner"
+          variant="outlined"
+          fullWidth
+          value={repoOwner}
+          onChange={(e) => setRepoOwner(e.target.value)}
+          required
+          sx={{ marginBottom: 2 }}
+        />
         <TextField
           label="Repository Name"
           variant="outlined"
