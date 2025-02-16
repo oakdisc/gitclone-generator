@@ -1,7 +1,12 @@
 {
   "name": "gitclone-generator",
   "version": "0.1.0",
+  "license": "MIT",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oakdisc/gitclone-generator.git"
+  },
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
