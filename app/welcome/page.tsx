@@ -8,6 +8,8 @@ import {
   Select,
   MenuItem,
   Box,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { LOCAL_STORAGE_KEYS, CLONE_METHODS } from "../utils/constants";
@@ -17,11 +19,11 @@ export default function Welcome() {
   const [userName, setUserName] = useState("");
   const [sshProfileName, setSshProfileName] = useState("git@github.com");
   const [userEmail, setUserEmail] = useState("");
-  const [success, setSuccess] = useState(false);
   const [userIdError, setUserIdError] = useState("");
   const [userEmailError, setUserEmailError] = useState("");
   const [cloneMethod, setCloneMethod] = useState(CLONE_METHODS.SSH);
   const router = useRouter();
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   useEffect(() => {
     // Retrieve values from localStorage
@@ -38,6 +40,13 @@ export default function Welcome() {
     if (storedSshProfileName) setSshProfileName(storedSshProfileName);
     if (storedUserEmail) setUserEmail(storedUserEmail);
   }, []); // Empty dependency array to run only on mount
+
+  const handleCloseSnackbar = (_?: unknown, reason?: string) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenSnackbar(false);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,107 +79,103 @@ export default function Welcome() {
     localStorage.setItem(LOCAL_STORAGE_KEYS.USER_EMAIL, userEmail);
     localStorage.setItem(LOCAL_STORAGE_KEYS.CLONE_METHOD, cloneMethod);
 
-    // Set success state
-    setSuccess(true);
+    // Show Snackbar and redirect after a short delay
+    setOpenSnackbar(true);
+    setTimeout(() => {
+      router.push("/");
+    }, 2000); // Redirect after 2 seconds
   };
 
-  if (success) {
-    return (
+  return (
+    <>
       <Container maxWidth="sm">
         <Typography variant="h4" gutterBottom>
-          Success!
+          Welcome! Please enter your details:
         </Typography>
-        <Typography variant="body1">
-          Your details have been successfully stored.
-        </Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => router.push("/")}
-        >
-          Go to Home
-        </Button>
-      </Container>
-    );
-  }
-
-  return (
-    <Container maxWidth="sm">
-      <Typography variant="h4" gutterBottom>
-        Welcome! Please enter your details:
-      </Typography>
-      <form onSubmit={handleSubmit}>
-        <TextField
-          id="user-id"
-          label="User ID"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          error={!!userIdError}
-          helperText={userIdError}
-          value={userId}
-          onChange={(e) => setUserId(e.target.value)}
-          required
-        />
-
-        <TextField
-          id="user-name"
-          label="User Name"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={userName}
-          onChange={(e) => setUserName(e.target.value)}
-          required
-        />
-
-        <TextField
-          id="user-email"
-          label="User Email"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          error={!!userEmailError}
-          helperText={
-            userEmailError ||
-            `If left blank, the tool will use ${userId ? userId : "(userid)"}+${
-              userName ? userName : "(username)"
-            }@users.noreply.github.com as your email.`
-          }
-          value={userEmail}
-          onChange={(e) => setUserEmail(e.target.value)}
-        />
-
-        <Box margin="normal">
-          <Select
-            id="clone-method"
-            value={cloneMethod}
-            onChange={(e) => setCloneMethod(e.target.value)}
+        <form onSubmit={handleSubmit}>
+          <TextField
+            id="user-id"
+            label="User ID"
+            variant="outlined"
             fullWidth
+            margin="normal"
+            error={!!userIdError}
+            helperText={userIdError}
+            value={userId}
+            onChange={(e) => setUserId(e.target.value)}
             required
-          >
-            <MenuItem value={CLONE_METHODS.SSH}>{CLONE_METHODS.SSH}</MenuItem>
-            <MenuItem value={CLONE_METHODS.HTTPS}>
-              {CLONE_METHODS.HTTPS}
-            </MenuItem>
-          </Select>
-        </Box>
+          />
 
-        <TextField
-          id="ssh-profile-name"
-          label="SSH Profile Name"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={sshProfileName}
-          onChange={(e) => setSshProfileName(e.target.value)}
-          required={cloneMethod === CLONE_METHODS.SSH}
-        />
+          <TextField
+            id="user-name"
+            label="User Name"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
+            required
+          />
 
-        <Button type="submit" variant="contained" color="primary" fullWidth>
-          Submit
-        </Button>
-      </form>
-    </Container>
+          <TextField
+            id="user-email"
+            label="User Email"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            error={!!userEmailError}
+            helperText={
+              userEmailError ||
+              `If left blank, the tool will use ${
+                userId ? userId : "(userid)"
+              }+${
+                userName ? userName : "(username)"
+              }@users.noreply.github.com as your email.`
+            }
+            value={userEmail}
+            onChange={(e) => setUserEmail(e.target.value)}
+          />
+
+          <Box margin="normal">
+            <Select
+              id="clone-method"
+              value={cloneMethod}
+              onChange={(e) => setCloneMethod(e.target.value)}
+              fullWidth
+              required
+            >
+              <MenuItem value={CLONE_METHODS.SSH}>{CLONE_METHODS.SSH}</MenuItem>
+              <MenuItem value={CLONE_METHODS.HTTPS}>
+                {CLONE_METHODS.HTTPS}
+              </MenuItem>
+            </Select>
+          </Box>
+
+          <TextField
+            id="ssh-profile-name"
+            label="SSH Profile Name"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={sshProfileName}
+            onChange={(e) => setSshProfileName(e.target.value)}
+            required={cloneMethod === CLONE_METHODS.SSH}
+          />
+
+          <Button type="submit" variant="contained" color="primary" fullWidth>
+            Submit
+          </Button>
+        </form>
+      </Container>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={2000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleCloseSnackbar} severity="success">
+          Your details have been successfully stored!
+        </Alert>
+      </Snackbar>
+    </>
   );
 }
