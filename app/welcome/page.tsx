@@ -83,7 +83,7 @@ export default function Welcome() {
     setOpenSnackbar(true);
     setTimeout(() => {
       router.push("/");
-    }, 2000); // Redirect after 2 seconds
+    }, 700); // Redirect after 0.7 seconds
   };
 
   return (
