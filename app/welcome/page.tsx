@@ -8,8 +8,7 @@ import {
   Select,
   MenuItem,
   Box,
-  Snackbar,
-  Alert,
+  CircularProgress,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { LOCAL_STORAGE_KEYS, CLONE_METHODS } from "../utils/constants";
@@ -23,7 +22,7 @@ export default function Welcome() {
   const [userEmailError, setUserEmailError] = useState("");
   const [cloneMethod, setCloneMethod] = useState(CLONE_METHODS.SSH);
   const router = useRouter();
-  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(false);
 
   useEffect(() => {
     // Retrieve values from localStorage
@@ -40,13 +39,6 @@ export default function Welcome() {
     if (storedSshProfileName) setSshProfileName(storedSshProfileName);
     if (storedUserEmail) setUserEmail(storedUserEmail);
   }, []); // Empty dependency array to run only on mount
-
-  const handleCloseSnackbar = (_?: unknown, reason?: string) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setOpenSnackbar(false);
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,11 +71,12 @@ export default function Welcome() {
     localStorage.setItem(LOCAL_STORAGE_KEYS.USER_EMAIL, userEmail);
     localStorage.setItem(LOCAL_STORAGE_KEYS.CLONE_METHOD, cloneMethod);
 
-    // Show Snackbar and redirect after a short delay
-    setOpenSnackbar(true);
+    // Show overlay and redirect after a short delay
+    setShowOverlay(true);
     setTimeout(() => {
+      setShowOverlay(false); // Hide overlay before redirecting
       router.push("/");
-    }, 700); // Redirect after 0.7 seconds
+    }, 700); // Redirect after 0. seconds
   };
 
   return (
@@ -167,15 +160,27 @@ export default function Welcome() {
           </Button>
         </form>
       </Container>
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={2000}
-        onClose={handleCloseSnackbar}
-      >
-        <Alert onClose={handleCloseSnackbar} severity="success">
-          Your details have been successfully stored!
-        </Alert>
-      </Snackbar>
+      {showOverlay && (
+        <Box
+          sx={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(76, 175, 80, 0.2)", // Adjusted transparency
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 9999,
+          }}
+        >
+          <CircularProgress color="inherit" />
+          <Typography variant="h5" color="white" sx={{ marginLeft: 2 }}>
+            Your settings have been saved! Redirecting...
+          </Typography>
+        </Box>
+      )}
     </>
   );
 }
