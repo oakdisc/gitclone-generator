@@ -87,7 +87,6 @@ export default function Welcome() {
         </Typography>
         <form onSubmit={handleSubmit}>
           <TextField
-            id="user-id"
             label="User ID"
             variant="outlined"
             fullWidth
@@ -100,7 +99,6 @@ export default function Welcome() {
           />
 
           <TextField
-            id="user-name"
             label="User Name"
             variant="outlined"
             fullWidth
@@ -111,7 +109,6 @@ export default function Welcome() {
           />
 
           <TextField
-            id="user-email"
             label="User Email"
             variant="outlined"
             fullWidth
@@ -131,7 +128,6 @@ export default function Welcome() {
 
           <Box margin="normal">
             <Select
-              id="clone-method"
               value={cloneMethod}
               onChange={(e) => setCloneMethod(e.target.value)}
               fullWidth
@@ -145,7 +141,6 @@ export default function Welcome() {
           </Box>
 
           <TextField
-            id="ssh-profile-name"
             label="SSH Profile Name"
             variant="outlined"
             fullWidth
