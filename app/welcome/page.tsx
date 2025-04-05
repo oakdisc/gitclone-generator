@@ -32,12 +32,14 @@ export default function Welcome() {
       LOCAL_STORAGE_KEYS.SSH_PROFILE_NAME
     );
     const storedUserEmail = localStorage.getItem(LOCAL_STORAGE_KEYS.USER_EMAIL);
+    const storedCloneMethod = localStorage.getItem(LOCAL_STORAGE_KEYS.CLONE_METHOD);
 
     // Set state if values are not empty
     if (storedUserId) setUserId(storedUserId);
     if (storedUserName) setUserName(storedUserName);
     if (storedSshProfileName) setSshProfileName(storedSshProfileName);
     if (storedUserEmail) setUserEmail(storedUserEmail);
+    if (storedCloneMethod) setCloneMethod(storedCloneMethod);
   }, []); // Empty dependency array to run only on mount
 
   const handleSubmit = (e: React.FormEvent) => {
